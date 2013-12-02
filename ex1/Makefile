@@ -13,3 +13,4 @@ clean:
 	rm -f test
 	rm -f *.o
 	rm -f *.vcd
+	rm -f *.pgm

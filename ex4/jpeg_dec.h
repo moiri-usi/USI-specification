@@ -106,6 +106,8 @@ SC_MODULE(jpeg_dec_pr) {
 
     /* internal signals */
     sc_signal<int>      rl_dec_out_prot;
+    sc_signal<sc_int<32> >      rl_dec_out_prot_sc;
+    sc_signal<sc_int<32> >      input_sc;
     sc_signal<bool>     ask_o;
     sc_signal<bool>     ready_o;
 
@@ -136,8 +138,15 @@ SC_MODULE(jpeg_dec_pr) {
             idct_out = new fifo_stat<int>("idct_out",1);
 
             rl_dec_1 = new rl_dec_RTL("rl_dec_1");
+            //input_sc = static_cast<sc_int<32> >(input);
+            //rl_dec_1->input(input_sc);
             rl_dec_1->input(input);
             rl_dec_1->output(rl_dec_out_prot);
+            //rl_dec_1->output(rl_dec_out_prot_sc);
+            //rl_dec_out_prot = static_cast<int>(rl_dec_out_prot_sc);
+            //rl_dec_out_prot = (int)rl_dec_out_prot_sc;
+            //rl_dec_out_prot = rl_dec_out_prot_sc.read().to_int();
+            //rl_dec_out_prot = rl_dec_out_prot_sc;
             rl_dec_1->ask_i(ask);
             rl_dec_1->ask_o(ask_o);
             rl_dec_1->ready_i(ready);

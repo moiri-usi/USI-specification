@@ -23,9 +23,7 @@ SC_MODULE(rl_enc_p) {
         }
 
     void process();
-    void communicate(int* value, bool action);
-    int read_val();
-    void write_val(int value);
+    void waiting();
 };
 
 #endif

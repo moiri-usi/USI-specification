@@ -16,69 +16,49 @@ void rl_enc_p::process() {
 
     while (1) {
         // read DC value
-        communicate(&value, READ);
+        ready.write(false);
+        value = input.read();
+        wait();
         // write DC value
-        communicate(&value, WRITE);
+        waiting();
+        output.write(value);
+        ready.write(true);
+        wait();
 
         count = 0;
 
         for( k = 1 ; k < 64 ; k++ ) {
-            communicate(&value, READ);
+            ready.write(false);
+            value = input.read();
+            wait();
             if ( value == 0 ) {
                 count++;
             }
             else {
-                communicate(&count, WRITE);
+                waiting();
+                output.write(count);
+                ready.write(true);
+                wait();
                 count = 0;
-                communicate(&value, WRITE);
+                ready.write(false);
+                wait();
+                waiting();
+                output.write(value);
+                ready.write(true);
+                wait();
             }
         }
-        value = 63;
-        communicate(&value, WRITE);
-    }
-}
-
-void rl_enc_p::communicate(int* value, bool action) {
-    if (state == READINPUT) {
-        if (action == WRITE) {
-            read_val();
-            wait();
-            write_val(*value);
-        }
-        else {
-            *value = read_val();
-        }
-    } 
-    else if (state == WRITEOUTPUT) {
-        if (action == READ) {
-            write_val(0);
-            *value = read_val();
-            wait();
-        }
-        else {
-            write_val(*value);
-        }
-    };
-}
-
-int rl_enc_p::read_val() {
-    int value;
-    ready.write(false);
-    value = input.read();
-    state = WRITEOUTPUT;
-    cout << "READ: " << value << endl;
-    return value;
-}
-
-void rl_enc_p::write_val(int value) {
-    while (!ask.read()) {
         ready.write(false);
-        cout << "WRITING..." << endl;
+        wait();
+        waiting();
+        output.write(63);
+        ready.write(true);
         wait();
     }
-    output.write(value);
-    ready.write(true);
-    state = READINPUT;
-    cout << "WRITE: " << value << endl;
-    wait();
+}
+
+void rl_enc_p::waiting() {
+    while (!ask.read()) {
+        wait();
+    }
 }

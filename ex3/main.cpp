@@ -119,15 +119,18 @@ int sc_main (int argc , char *argv[]) {
 //    ff2p1.ready(s_ready);
 //    ff2p1.output(s_p_data);
 
-    P2FF<int> p2ff1("p2ff1");
-    p2ff1.clk(clk);
-    p2ff1.input(s_p_data);
-    p2ff1.ask(s_ask);
-    p2ff1.ready(s_ready);
-    p2ff1.output(jpeg_enc_out_ff);
+//    P2FF<int> p2ff1("p2ff1");
+//    p2ff1.clk(clk);
+//    p2ff1.input(s_p_data);
+//    p2ff1.ask(s_ask);
+//    p2ff1.ready(s_ready);
+//    p2ff1.output(jpeg_enc_out_ff);
 
     jpeg_dec jpeg_dec_1("jpeg_dec_1", quantization, MAXWIDTH, typefile);
-    jpeg_dec_1.input(jpeg_enc_out_ff);
+    jpeg_dec_1.input(s_p_data);
+    jpeg_dec_1.ask(s_ask);
+    jpeg_dec_1.ready(s_ready);
+    jpeg_dec_1.clk(clk);
     jpeg_dec_1.parameters(parameters_dup2);
     jpeg_dec_1.output(result);
 

@@ -11,54 +11,46 @@ void rl_enc_p::process() {
 
     // reset cycle
     ready.write(false);
-    state = READINPUT;
     wait();
 
     while (1) {
         // read DC value
-        ready.write(false);
-        value = input.read();
-        wait();
+        value = read_val();
         // write DC value
-        waiting();
-        output.write(value);
-        ready.write(true);
-        wait();
+        write_val(value);
 
         count = 0;
 
         for( k = 1 ; k < 64 ; k++ ) {
-            ready.write(false);
-            value = input.read();
-            wait();
+            value = read_val();
             if ( value == 0 ) {
                 count++;
             }
             else {
-                waiting();
-                output.write(count);
-                ready.write(true);
-                wait();
+                write_val(count);
                 count = 0;
                 ready.write(false);
                 wait();
-                waiting();
-                output.write(value);
-                ready.write(true);
-                wait();
+                write_val(value);
             }
         }
         ready.write(false);
         wait();
-        waiting();
-        output.write(63);
-        ready.write(true);
-        wait();
+        write_val(63);
     }
 }
 
-void rl_enc_p::waiting() {
-    while (!ask.read()) {
-        wait();
-    }
+int rl_enc_p::read_val() {
+    int value;
+    ready.write(false);
+    value = input.read();
+    wait();
+    return value;
+}
+
+void rl_enc_p::write_val(int value) {
+    while (!ask.read()) wait();
+    output.write(value);
+    ready.write(true);
+    wait();
 }

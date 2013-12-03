@@ -1,3 +1,4 @@
 *.o
 *.pgm
 test
+.syntastic_custom_includes
